@@ -31,7 +31,7 @@ class Diagram : # How do I get the whole layered aspect of it??
     def __str__(self): # todo: property: size, height, width
         return f"Diagram {self.name} has size {self.size}, height: {self.height}, width: {self.width} \nnodes: \n" + "\n".join(str(obj) for obj in self.objects)
 
-class DiagramObject :
+class DiagramObject : # todo this needs to change, object type is the first, rest is attributes silly goose
     def __init__(self, attribname, attribvalue): # todo: ymin, ymax etc etc
         self.attribute = attribname #todo take the size box for height and width info
         self.value = attribvalue
