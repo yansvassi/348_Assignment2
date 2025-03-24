@@ -29,7 +29,7 @@ class Diagram : # How do I get the whole layered aspect of it??
         self.objects = [] # for storing
 
     def __str__(self):
-        print(f"Diagram {self.name} has size {self.size}, height: {self.height}, width: {self.width}")
+        return f"Diagram {self.name} has size {self.size}, height: {self.height}, width: {self.width} \nnodes: \n" + "\n".join(str(obj) for obj in self.objects)
 
 class DiagramObject :
     def __init__(self, attribname, attribvalue):
@@ -38,7 +38,7 @@ class DiagramObject :
         self.children = []
 
     def __str__(self) :
-        print(f"field: {self.attribute}, value: {self.value}")
+        return f"{self.attribute}: {self.value}" #wrapper tags no value hmmmm what to do?
 
 diagrams = {} #keys will be file names, values diagrams
 invalidInputs = 0
@@ -114,7 +114,7 @@ def main():
                 else:
                     print(len(diagrams), "diagrams loaded: ")
                     for savedxml in diagrams: # check if works
-                        print(savedxml, ",") # remove line breaks
+                        print(f"{savedxml},", end = "\n") # remove line breaks
                 continue
             case "3":
                 filename = input("Enter the filename to load: ")
@@ -132,8 +132,11 @@ def main():
                         print(e)
                 continue
             case "4":
-                filename = input("Enter the filename to display: ") #only those that are already loaded right?git
-
+                filename = input("Enter the filename to display: ") #only those that are already loaded right?, specify what format to type name of diagram (w xml?)
+                if filename[:-4] in diagrams:
+                    print(diagrams[filename[:-4]])
+                else:
+                    print(f"{filename} not found in loaded diagrams")
                 continue
             case "5":
                 print("5")
