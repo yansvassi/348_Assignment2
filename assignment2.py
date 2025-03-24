@@ -28,12 +28,12 @@ class Diagram : # How do I get the whole layered aspect of it??
         self.width = 0
         self.objects = [] # for storing
 
-    def __str__(self):
+    def __str__(self): # todo: property: size, height, width
         return f"Diagram {self.name} has size {self.size}, height: {self.height}, width: {self.width} \nnodes: \n" + "\n".join(str(obj) for obj in self.objects)
 
 class DiagramObject :
-    def __init__(self, attribname, attribvalue):
-        self.attribute = attribname
+    def __init__(self, attribname, attribvalue): # todo: ymin, ymax etc etc
+        self.attribute = attribname #todo take the size box for height and width info
         self.value = attribvalue
         self.children = []
 
@@ -113,8 +113,7 @@ def main():
                     print("0 diagrams loaded.")
                 else:
                     print(len(diagrams), "diagrams loaded: ")
-                    for savedxml in diagrams: # check if works
-                        print(f"{savedxml},", end = "\n") # remove line breaks
+                    print(", ".join(diagrams.keys())) # remove line breaks todo: '' around each elem
                 continue
             case "3":
                 filename = input("Enter the filename to load: ")
@@ -140,21 +139,62 @@ def main():
                 continue
             case "5":
                 print("5")
-                response2 = input("Would you like to search by type (5.1) or by dimension (5.2) ?")
+                response2 = input("Would you like to search by type (1) or by dimension (2)? ")
                 match response2:
-                    case "5.1":
+                    case "1":
                         print("search by type...")
                         continue
-                    case "5.2":
-                        print("search by dimension...")
-                        continue
+                    case "2":
+                        found = {}
+
+                        print("\nSearch parameters \n---------------")
+                        minwidth = input("Min width (enter blank for 0): ")
+                        maxwidth = input("Max width (enter blank for max): ")
+                        minheight = input("Min height (enter blank for zero): ")
+                        maxheight = input("Max height (enter blank for max): ")
+                        difficult = input("Difficult (yes/no/All): ")
+                        truncated = input("Truncated (yes/no/All): ")
+
+                        for diagram in diagrams:
+                            if minwidth:
+                                if diagram.width >= minwidth:
+                                    continue #?
+                                else:
+                                    break #? onto next digram to check
+                            if maxwidth:
+                                if diagram.width <= maxwidth:
+                                    continue # this be good, next param
+                                else:
+                                    break
+                            if minheight:
+                                if diagram.height >= minheight:
+                                    continue
+                                else:
+                                    break
+                            if maxheight:
+                                if diagram.height <= maxheight:
+                                    found[diagram.name] = diagrams[diagram]
+                                else:
+                                    break
+                        if len(found) > 0:
+                            print(f"Found {len(found)} diagrams: ")
+                            print(", \n".join(diagrams.keys()))
+                        else:
+                            print("No matching diagrams found")
+                        continue # todo: consistency in search format (.xml or no .xml)
                     # default???
             case "6":
                 print("6")
                 continue
             case "7":
-                print("Program will terminate. GoodBye :)")
-                sys.exit()
+                confirm = input("Are you sure you want to quit the program (Yes/No)? ")
+                match confirm.lower():
+                    case "y"|"yes":
+                        print("Good bye…")
+                        sys.exit()
+                    case _:
+                        continue
+
             # else say selection not valid, invalid inputs ++
         if invalidInputs == 0:
             print("That's not valid dingus")
