@@ -25,11 +25,11 @@ class Diagram : # How do I get the whole layered aspect of it??
         self.name = name
         self.height = 0
         self.width = 0
-        self.width = 0
+        self.depth = 0 # todo: include filename and path???
         self.objects = [] # for storing
 
     def __str__(self): # todo: property: size, height, width
-        return f"Diagram {self.name} has size {self.size}, height: {self.height}, width: {self.width} \nnodes: \n" + "\n".join(str(obj) for obj in self.objects)
+        return f"\n{self.name}\ndepth: {self.depth}\nheight: {self.height}\nwidth: {self.width} \nobjects: \n" + "\n".join(str(obj) for obj in self.objects)
 
 class DiagramObject : # todo this needs to change, object type is the first, rest is attributes silly goose
 
@@ -41,7 +41,7 @@ class DiagramObject : # todo this needs to change, object type is the first, res
         self.boundary = [] # xmin, ymin, xmax, ymax
 
     def __str__(self) :
-        return f"{self.objecttype} 1," #todo: iterate through attribs
+        return f"{self.objecttype}, \n " #todo: iterate through attribs
 
 diagrams = {} #keys will be file names, values diagrams
 invalidInputs = 0
@@ -53,18 +53,19 @@ def parsexml(xmlfile, diagram) :
     root = tree.getroot()
     if root.find('.//size') is not None:
         sizetag = root.find('.//size') # todo: assuming perfect input???
-        diagram.width = sizetag.find('width') # what if doesnt have this attrib??
-        diagram.height = sizetag.find('height')
-        diagram.depth = sizetag.find('depth')
+        diagram.width = int(sizetag.find('width').text) # what if doesnt have this attrib??
+        diagram.height = int(sizetag.find('height').text)
+        diagram.depth = int(sizetag.find('depth').text)
     if root.find('.//object') is not None:
         for object in root.findall('.//object'):
             obj = DiagramObject()
-            obj.objecttype = object.find('name')
-            obj.truncated = object.find('truncated')
-            obj.difficult = object.find('difficult')
+            obj.objecttype = object.find('name').text
+            obj.truncated = object.find('truncated').text
+            obj.difficult = object.find('difficult').text
             for coord in object.find('bndbox'):
                 obj.boundary.append(coord)
             diagram.objects.append(obj)
+            # todo: add all the attribs??
 
 
 def main():
@@ -108,7 +109,7 @@ def main():
                 if len(diagrams) == 0:
                     print("0 diagrams loaded.")
                 else:
-                    print(len(diagrams), "diagrams loaded: ")
+                    print(len(diagrams), "diagram(s) loaded: ")
                     print(", ".join(diagrams.keys())) # remove line breaks todo: '' around each elem
                 continue
             case "3":

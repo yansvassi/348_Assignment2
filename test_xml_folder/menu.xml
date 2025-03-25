@@ -1,32 +1,92 @@
 <breakfast_menu>
+<object>
+<name>food</name>
+<pose>Unspecified</pose>
+<truncated>0</truncated>
+<difficult>0</difficult>
+<bndbox>
+    <xmin>45</xmin>
+    <ymin>132</ymin>
+    <xmax>305</xmax>
+    <ymax>350</ymax>
+</bndbox>
 <food>
 <name>Belgian Waffles</name>
 <price>$5.95</price>
 <description>Two of our famous Belgian Waffles with plenty of real maple syrup</description>
 <calories>650</calories>
 </food>
+</object>
+<object>
+<name>food</name>
+<pose>Unspecified</pose>
+<truncated>0</truncated>
+<difficult>0</difficult>
+<bndbox>
+    <xmin>78</xmin>
+    <ymin>64</ymin>
+    <xmax>220</xmax>
+    <ymax>315</ymax>
+</bndbox>
 <food>
 <name>Strawberry Belgian Waffles</name>
 <price>$7.95</price>
 <description>Light Belgian waffles covered with strawberries and whipped cream</description>
 <calories>900</calories>
 </food>
+</object>
+<object>
+<name>food</name>
+<pose>Unspecified</pose>
+<truncated>0</truncated>
+<difficult>0</difficult>
+<bndbox>
+    <xmin>12</xmin>
+    <ymin>150</ymin>
+    <xmax>350</xmax>
+    <ymax>250</ymax>
+</bndbox>
 <food>
 <name>Berry-Berry Belgian Waffles</name>
 <price>$8.95</price>
 <description>Light Belgian waffles covered with an assortment of fresh berries and whipped cream</description>
 <calories>900</calories>
 </food>
+</object>
+<object>
+<name>food</name>
+<pose>Unspecified</pose>
+<truncated>0</truncated>
+<difficult>0</difficult>
+<bndbox>
+    <xmin>100</xmin>
+    <ymin>30</ymin>
+    <xmax>250</xmax>
+    <ymax>400</ymax>
+</bndbox>
 <food>
 <name>French Toast</name>
 <price>$4.50</price>
 <description>Thick slices made from our homemade sourdough bread</description>
 <calories>600</calories>
 </food>
+</object>
+<object>
+<name>food</name>
+<pose>Unspecified</pose>
+<truncated>0</truncated>
+<difficult>0</difficult>
+<bndbox>
+    <xmin>30</xmin>
+    <ymin>80</ymin>
+    <xmax>300</xmax>
+    <ymax>370</ymax>
+</bndbox>
 <food>
 <name>Homestyle Breakfast</name>
 <price>$6.95</price>
 <description>Two eggs, bacon or sausage, toast, and our ever-popular hash browns</description>
 <calories>950</calories>
 </food>
+</object>
 </breakfast_menu>
