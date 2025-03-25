@@ -42,7 +42,7 @@ class DiagramObject : # todo this needs to change, object type is the first, res
         self.area = 0;
 
     def __str__(self) :
-        return f'\n\t{self.objecttype} \n\t truncated: {self.truncated} \n\t difficult: {self.difficult} \n\t boundaries: \n\t\txmin: {int(self.boundary[0].text)}\n\t\tymin: {int(self.boundary[1].text)}\n\t\txmax: {int(self.boundary[2].text)}\n\t\tymax: {int(self.boundary[3].text)}' #todo: iterate through attribs
+        return f'\n\t{self.objecttype} \n\t truncated: {self.truncated} \n\t difficult: {self.difficult} \n\t boundaries: \n\t\txmin: {self.boundary["xmin"]}\n\t\tymin: {self.boundary["ymin"]}\n\t\txmax: {self.boundary["xmax"]}\n\t\tymax: {self.boundary["ymax"]}' #todo: iterate through attribs?
 
 diagrams = {} #keys will be file names, values diagrams
 invalid_inputs = 0
@@ -65,7 +65,7 @@ def parsexml(xmlfile, diagram) :
             obj.difficult = obj_element.find('difficult').text
             for coord in obj_element.find('.//bndbox'):
                 obj.boundary[coord.tag] = coord.text
-            obj.area = (abs(obj.boundary['ymax'] - obj.boundary['ymin']) * abs(obj.boundary['xmax'] - obj.boundary['xmin']))
+            obj.area = (abs(int(obj.boundary['ymax']) - int(obj.boundary['ymin'])) * abs(int(obj.boundary['xmax']) - int(obj.boundary['xmin'])))
             diagram.objects.append(obj)
             # todo: add all the attribs??
 
@@ -120,6 +120,8 @@ def main():
                 path_to_file = directory + '/' + filename
                 if not os.path.isfile(path_to_file): #at this point are we in directory or do I have to put the whole path here?
                     print('nuh uh! ')
+                elif not filename.endswith('.xml'):
+                    print('Invalid doctype, only xml file parsing is available')
                 else:
                     diagram = Diagram(filename[:-4])
                     try:
@@ -140,7 +142,7 @@ def main():
                 response_2 = input('Would you like to search by type (1) or by dimension (2)? ')
                 match response_2:
                     case '1':
-                        search_type = input('Enter the diagram type: ')
+                        search_type = input('Enter the object type: ')
                         found = {}
 
                         for name, diagram in diagrams.items():
@@ -151,6 +153,7 @@ def main():
                         if len(found) > 0:
                             print(f'\nFound {len(found)} diagrams: ')
                             print(', \n'.join(found.keys()))
+                            print()
                         else:
                             print('No matching diagrams found')
                         continue
@@ -225,7 +228,6 @@ def main():
 
                     if len(diagrams) == 0:
                         print("No Diagrams loaded, load diagrams to access statistics")
-                        continue # correct control flow?
 
                     match stat:
                         case '1':
@@ -277,7 +279,24 @@ def main():
                             continue
 
                         case '5':
-                            print('bla')
+                            min_diagram = 'None'
+                            min_obj = 'None'
+                            min_area = float('inf')
+                            max_diagram = 'None'
+                            max_obj = 'None'
+                            max_area = 0
+
+                            for name, diagram in diagrams.items():
+                                for obj in diagram.objects:
+                                    if obj.area < min_area:
+                                        min_area = obj.area
+                                        min_obj = obj.objecttype
+                                        min_diagram = name
+                                    if obj.area > max_area:
+                                        max_area = obj.area
+                                        max_obj = obj.objecttype
+                                        max_diagram = name
+                            print(f'\nMinimum and Maximum object areas: \n\tmin area: {min_area} ({min_obj} in {min_diagram})\n\tmin area: {max_area} ({max_obj} in {max_diagram})\n')
                             continue
                 continue
 
@@ -308,5 +327,6 @@ def main():
 
         if invalid_inputs == 3:
             print('No bueno, go fuck yourself')
+            sys.exit(1)
 
 main()
