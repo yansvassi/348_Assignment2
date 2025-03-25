@@ -23,8 +23,8 @@ Make sure errors (ex: FNF) are handled gracefully, invalid entries
 class Diagram : # How do I get the whole layered aspect of it??
     def __init__(self, name):
         self.name = name
-        self.size = 0
         self.height = 0
+        self.width = 0
         self.width = 0
         self.objects = [] # for storing
 
@@ -32,44 +32,40 @@ class Diagram : # How do I get the whole layered aspect of it??
         return f"Diagram {self.name} has size {self.size}, height: {self.height}, width: {self.width} \nnodes: \n" + "\n".join(str(obj) for obj in self.objects)
 
 class DiagramObject : # todo this needs to change, object type is the first, rest is attributes silly goose
-    def __init__(self, attribname, attribvalue): # todo: ymin, ymax etc etc
-        self.attribute = attribname #todo take the size box for height and width info
-        self.value = attribvalue
-        self.children = []
+
+    def __init__(self): # todo: ymin, ymax etc etc
+        self.objecttype = None
+        self.truncated = None
+        self.difficult = None
+        self.attribs = {}
+        self.boundary = [] # xmin, ymin, xmax, ymax
 
     def __str__(self) :
-        return f"{self.attribute}: {self.value}" #wrapper tags no value hmmmm what to do?
+        return f"{self.objecttype} 1," #todo: iterate through attribs
 
 diagrams = {} #keys will be file names, values diagrams
 invalidInputs = 0
-
-# make array list of elements each of which has a list or set or smt that holds its "attributes"
-# could you have any amount of branches off it?
-
-# wrapper section below rest and ":"
-def recursiveHelper(root, diagram): # how to count height and width
-    for child in root:
-        if type(child) is dict:
-            #what here?? like when its more children and not a dictionary
-            obj = DiagramObject(child.key, child.value)
-            print(child.key, child.value) #debugging purposes
-            diagram.objects.append(obj)
-            diagram.size += 1
-            #check if has sub library, is it possible for there to be a sublibrary in this case?
-        else:
-            print(child.tag, child.text) #debugging purposes
-            obj = DiagramObject(child.tag, child.text) #is this correct (passing vars)
-            diagram.objects.append(obj)
-            diagram.size += 1
-            recursiveHelper(child, diagram)
-        # iterate similarly through all tags in bottom child
 
 def parsexml(xmlfile, diagram) :
     if os.path.basename(xmlfile)[:-4] in diagrams : #correct key??
         raise Exception(f"Invalid entry: {os.path.basename(xmlfile)[:-4]}.xml already loaded")
     tree = ET.parse(xmlfile)
     root = tree.getroot()
-    recursiveHelper(root, diagram)
+    if root.find('.//size') is not None:
+        sizetag = root.find('.//size') # todo: assuming perfect input???
+        diagram.width = sizetag.find('width') # what if doesnt have this attrib??
+        diagram.height = sizetag.find('height')
+        diagram.depth = sizetag.find('depth')
+    if root.find('.//object') is not None:
+        for object in root.findall('.//object'):
+            obj = DiagramObject()
+            obj.objecttype = object.find('name')
+            obj.truncated = object.find('truncated')
+            obj.difficult = object.find('difficult')
+            for coord in object.find('bndbox'):
+                obj.boundary.append(coord)
+            diagram.objects.append(obj)
+
 
 def main():
     global invalidInputs

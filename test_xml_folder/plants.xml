@@ -1,4 +1,21 @@
 <CATALOG>
+<annotation>
+<size>
+    <width>1000</width>
+    <height>800</height>
+    <depth>3</depth>
+</size>
+<object>
+<name>plant</name>
+<pose>Unspecified</pose>
+<truncated>0</truncated>
+<difficult>0</difficult>
+<bndbox>
+    <xmin>0</xmin>
+    <ymin>0</ymin>
+    <xmax>100</xmax>
+    <ymax>100</ymax>
+</bndbox>
 <PLANT>
 <COMMON>Bloodroot</COMMON>
 <BOTANICAL>Sanguinaria canadensis</BOTANICAL>
@@ -7,6 +24,7 @@
 <PRICE>$2.44</PRICE>
 <AVAILABILITY>031599</AVAILABILITY>
 </PLANT>
+</object>
 <PLANT>
 <COMMON>Columbine</COMMON>
 <BOTANICAL>Aquilegia canadensis</BOTANICAL>
@@ -287,4 +305,5 @@
 <PRICE>$3.02</PRICE>
 <AVAILABILITY>022299</AVAILABILITY>
 </PLANT>
+</annotation>
 </CATALOG>
