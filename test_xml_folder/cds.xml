@@ -1,4 +1,9 @@
 <CATALOG>
+    <size>
+        <width>1234</width>
+        <height>536</height>
+        <depth>4</depth>
+    </size>
 <object>
 <name>cd</name>
 <pose>Unspecified</pose>

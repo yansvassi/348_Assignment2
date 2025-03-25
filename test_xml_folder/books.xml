@@ -1,5 +1,10 @@
-<?xml version="1.0"?>
+
 <catalog>
+   <size>
+        <width>1300</width>
+        <height>536</height>
+        <depth>2</depth>
+    </size>
    <object>
       <name>book</name>
       <pose>Unspecified</pose>
@@ -11,7 +16,7 @@
           <xmax>305</xmax>
           <ymax>368</ymax>
       </bndbox>
-      <book id="bk101">
+      <book>
          <author>Gambardella, Matthew</author>
          <title>XML Developer's Guide</title>
          <genre>Computer</genre>
@@ -32,7 +37,7 @@
           <xmax>221</xmax>
           <ymax>390</ymax>
       </bndbox>
-      <book id="bk102">
+      <book>
          <author>Ralls, Kim</author>
          <title>Midnight Rain</title>
          <genre>Fantasy</genre>
@@ -54,7 +59,7 @@
           <xmax>345</xmax>
           <ymax>276</ymax>
       </bndbox>
-      <book id="bk103">
+      <book>
          <author>Corets, Eva</author>
          <title>Maeve Ascendant</title>
          <genre>Fantasy</genre>
@@ -76,7 +81,7 @@
           <xmax>312</xmax>
           <ymax>354</ymax>
       </bndbox>
-      <book id="bk104">
+      <book>
          <author>Corets, Eva</author>
          <title>Oberon's Legacy</title>
          <genre>Fantasy</genre>
@@ -99,7 +104,7 @@
           <xmax>254</xmax>
           <ymax>331</ymax>
       </bndbox>
-      <book id="bk105">
+      <book>
          <author>Corets, Eva</author>
          <title>The Sundered Grail</title>
          <genre>Fantasy</genre>
@@ -121,7 +126,7 @@
           <xmax>389</xmax>
           <ymax>301</ymax>
       </bndbox>
-      <book id="bk106">
+      <book>
          <author>Randall, Cynthia</author>
          <title>Lover Birds</title>
          <genre>Romance</genre>
@@ -142,7 +147,7 @@
           <xmax>312</xmax>
           <ymax>265</ymax>
       </bndbox>
-      <book id="bk107">
+      <book>
          <author>Thurman, Paula</author>
          <title>Splish Splash</title>
          <genre>Romance</genre>
@@ -163,7 +168,7 @@
           <xmax>356</xmax>
           <ymax>237</ymax>
       </bndbox>
-      <book id="bk108">
+      <book>
          <author>Knorr, Stefan</author>
          <title>Creepy Crawlies</title>
          <genre>Horror</genre>
@@ -184,7 +189,7 @@
           <xmax>389</xmax>
           <ymax>358</ymax>
       </bndbox>
-      <book id="bk109">
+      <book>
          <author>Kress, Peter</author>
          <title>Paradox Lost</title>
          <genre>Science Fiction</genre>
@@ -206,7 +211,7 @@
           <xmax>276</xmax>
           <ymax>245</ymax>
       </bndbox>
-      <book id="bk110">
+      <book>
          <author>O'Brien, Tim</author>
          <title>Microsoft .NET: The Programming Bible</title>
          <genre>Computer</genre>
@@ -227,7 +232,7 @@
           <xmax>320</xmax>
           <ymax>348</ymax>
       </bndbox>
-      <book id="bk111">
+      <book>
          <author>O'Brien, Tim</author>
          <title>MSXML3: A Comprehensive Guide</title>
          <genre>Computer</genre>
@@ -249,7 +254,7 @@
           <xmax>389</xmax>
           <ymax>238</ymax>
       </bndbox>
-      <book id="bk112">
+      <book>
          <author>Galos, Mike</author>
          <title>Visual Studio 7: A Comprehensive Guide</title>
          <genre>Computer</genre>

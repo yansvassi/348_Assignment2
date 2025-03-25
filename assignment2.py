@@ -37,11 +37,11 @@ class DiagramObject : # todo this needs to change, object type is the first, res
         self.objecttype = None
         self.truncated = None
         self.difficult = None
-        self.attribs = {}
+        self.attribs = {} #do this or no?
         self.boundary = [] # xmin, ymin, xmax, ymax
 
     def __str__(self) :
-        return f"{self.objecttype}, \n " #todo: iterate through attribs
+        return f"\n\t{self.objecttype} \n\t truncated: {self.truncated} \n\t difficult: {self.difficult} \n\t boundaries: \n\t\txmin: {int(self.boundary[0].text)}\n\t\tymin: {int(self.boundary[1].text)}\n\t\txmax: {int(self.boundary[2].text)}\n\t\tymax: {int(self.boundary[3].text)}" #todo: iterate through attribs
 
 diagrams = {} #keys will be file names, values diagrams
 invalidInputs = 0
