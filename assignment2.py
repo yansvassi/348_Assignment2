@@ -7,29 +7,32 @@ import xml.etree.ElementTree as ET    # for parsing XML files.
 	•	CLI menu implementation.
 	•	User input handling.
 	•	Calls to relevant classes/functions.
-
-If the program gets too large, structure it into:
-	•	diagram.py – Contains Diagram and DiagramObject class definitions.
-	•	xml_parser.py – Handles XML file reading and data extraction.
-	•	menu.py – Manages CLI display and user interactions.
-	•	utils.py – Helper functions for searching, filtering, and formatting output.
-
-Test Files
-	•	Include sample XML files for testing.
-	•	test_data/ directory to store these XML files.
 	
 Make sure errors (ex: FNF) are handled gracefully, invalid entries
 '''
+
 class Diagram : # How do I get the whole layered aspect of it??
     def __init__(self, name):
         self.name = name
-        self.height = 0
-        self.width = 0
+        self._height = 0
+        self._width = 0
         self.depth = 0 # todo: include filename and path???
         self.objects = [] # for storing
 
+    @property
+    def area(self):
+        return self._width * self._height
+
+    @property
+    def width(self):
+        return self._width
+
+    @property
+    def height(self):
+        return self._height
+
     def __str__(self): # todo: property: size, height, width
-        return f'\n{self.name}\ndepth: {self.depth}\nheight: {self.height}\nwidth: {self.width} \nobjects: \n' + '\n'.join(str(obj) for obj in self.objects)
+        return f'\n{self.name}\ndepth: {self.depth}\nheight: {self.height}\nwidth: {self.width}\narea: {self.area} \nobjects: \n' + '\n'.join(str(obj) for obj in self.objects)
 
 class DiagramObject : # todo this needs to change, object type is the first, rest is attributes silly goose
 
@@ -61,8 +64,8 @@ def parsexml(xmlfile, diagram) :
         for obj_element in root.findall('.//object'):
             obj = DiagramObject()
             obj.objecttype = obj_element.find('name').text
-            obj.truncated = obj_element.find('truncated').text
-            obj.difficult = obj_element.find('difficult').text
+            obj._truncated = obj_element.find('truncated').text
+            obj._difficult = obj_element.find('difficult').text
             for coord in obj_element.find('.//bndbox'):
                 obj.boundary[coord.tag] = coord.text
             obj.area = (abs(int(obj.boundary['ymax']) - int(obj.boundary['ymin'])) * abs(int(obj.boundary['xmax']) - int(obj.boundary['xmin'])))
@@ -163,24 +166,25 @@ def main():
                         max_width = input('Max width (enter blank for max): ')
                         min_height = input('Min height (enter blank for zero): ')
                         max_height = input('Max height (enter blank for max): ')
-                        valid = False
-                        while not valid:
-                            difficult = input('Difficult (yes/no/All): ')
-                            if difficult.lower() in ['y', 'yes', 'n', 'no', 'a', 'all']:
-                                valid = True
-                                continue
-                            print('Invalid input, try again')
 
                         valid = False
                         while not valid:
-                            truncated = input('Truncated (yes/no/All): ')
+                            truncated = input('Containing Truncated Object (yes/no/All): ')
                             if truncated.lower() in ['y', 'yes', 'n', 'no', 'a', 'all']:
                                 valid = True
                                 continue
                             print('Invalid input, try again')
 
+                        valid = False
+                        while not valid:
+                            difficult = input('Containing Difficult Object (yes/no/All): ')
+                            if difficult.lower() in ['y', 'yes', 'n', 'no', 'a', 'all']:
+                                valid = True
+                                continue
+                            print('Invalid input, try again')
 
                         found = {}
+                        matched = False
 
                         min_width = int(min_width) if min_width else 0
                         max_width = int(max_width) if max_width else float('inf')
@@ -198,20 +202,31 @@ def main():
 
                         for name, diagram in diagrams.items():
                             if not (max_width >= diagram.width >= min_width):
-                                continue #onto next diagram
+                                continue
                             if not (max_height >= diagram.height >= min_height):
                                 continue
-                            if truncated in ['1', '0']:
-                                if truncated != diagram.truncated:
-                                    continue
-                            if difficult in ['1', '0']:
-                                if difficult != diagram.difficult:
-                                    continue
-                            found[name] = diagram
+
+                            if truncated in [1, 0]:
+                                for thing in diagram.objects:
+                                    if truncated == int(thing.truncated):
+                                        if difficult in [1, 0]:
+                                            if difficult == int(thing.difficult):
+                                                matched = True
+                                        else:
+                                            matched = True
+
+                            if difficult in [1, 0]:
+                                for thing in diagram.objects:
+                                    if difficult == thing.difficult:
+                                        matched = True
+
+                            if matched:
+                                found[name] = diagram
 
                         if len(found) > 0:
                             print(f'\nFound {len(found)} diagrams: ')
                             print(', \n'.join(found.keys()))
+                            print()
                         else:
                             print('No matching diagrams found')
                         continue # todo: consistency in search format (.xml or no .xml)
