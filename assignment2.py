@@ -27,9 +27,17 @@ class Diagram : # How do I get the whole layered aspect of it??
     def width(self):
         return self._width
 
+    @width.setter
+    def width(self, value):
+        self._width = value
+
     @property
     def height(self):
         return self._height
+
+    @height.setter
+    def height(self, value):
+        self._height = value
 
     def __str__(self): # todo: property: size, height, width
         return f'\n{self.name}\ndepth: {self.depth}\nheight: {self.height}\nwidth: {self.width}\narea: {self.area} \nobjects: \n' + '\n'.join(str(obj) for obj in self.objects)
@@ -38,11 +46,27 @@ class DiagramObject : # todo this needs to change, object type is the first, res
 
     def __init__(self): # todo: ymin, ymax etc etc
         self.objecttype = None
-        self.truncated = None
-        self.difficult = None
+        self._truncated = None
+        self._difficult = None
         self.attribs = {} #do this or no?
         self.boundary = {'xmin':None, 'ymin':None, 'ymax':None, 'xmax':None}# xmin, ymin, xmax, ymax
-        self.area = 0;
+        self.area = 0
+
+    @property
+    def truncated(self):
+        return self._truncated
+
+    @truncated.setter
+    def truncated(self, value):
+        self._truncated = value
+
+    @property
+    def difficult(self):
+        return self._difficult
+
+    @difficult.setter
+    def difficult(self, value):
+        self._difficult = value
 
     def __str__(self) :
         return f'\n\t{self.objecttype} \n\t truncated: {self.truncated} \n\t difficult: {self.difficult} \n\t boundaries: \n\t\txmin: {self.boundary["xmin"]}\n\t\tymin: {self.boundary["ymin"]}\n\t\txmax: {self.boundary["xmax"]}\n\t\tymax: {self.boundary["ymax"]}' #todo: iterate through attribs?
@@ -57,15 +81,15 @@ def parsexml(xmlfile, diagram) :
     root = tree.getroot()
     if root.find('.//size') is not None:
         size_tag = root.find('.//size') # todo: assuming perfect input???
-        diagram.width = int(size_tag.find('width').text) # what if doesnt have this attrib??
-        diagram.height = int(size_tag.find('height').text)
+        diagram._width = int(size_tag.find('width').text) # what if doesnt have this attrib??
+        diagram._height = int(size_tag.find('height').text)
         diagram.depth = int(size_tag.find('depth').text)
     if root.find('.//object') is not None:
         for obj_element in root.findall('.//object'):
             obj = DiagramObject()
             obj.objecttype = obj_element.find('name').text
-            obj._truncated = obj_element.find('truncated').text
-            obj._difficult = obj_element.find('difficult').text
+            obj.truncated = obj_element.find('truncated').text
+            obj.difficult = obj_element.find('difficult').text
             for coord in obj_element.find('.//bndbox'):
                 obj.boundary[coord.tag] = coord.text
             obj.area = (abs(int(obj.boundary['ymax']) - int(obj.boundary['ymin'])) * abs(int(obj.boundary['xmax']) - int(obj.boundary['xmin'])))
@@ -118,7 +142,7 @@ def main():
                     print(', '.join(diagrams.keys())) # remove line breaks todo: '' around each elem
                 continue
             case '3':
-                filename = input('Enter the filename to load: ')
+                filename = input('Enter the filename to load: ').strip()
                 #check if file available, if not return
                 path_to_file = directory + '/' + filename
                 if not os.path.isfile(path_to_file): #at this point are we in directory or do I have to put the whole path here?
@@ -135,17 +159,17 @@ def main():
                         print(e)
                 continue
             case '4':
-                filename = input('Enter the filename to display: ') #only those that are already loaded right?, specify what format to type name of diagram (w xml?)
+                filename = input('Enter the filename to display: ').strip() #only those that are already loaded right?, specify what format to type name of diagram (w xml?)
                 if filename[:-4] in diagrams:
                     print(diagrams[filename[:-4]])
                 else:
                     print(f'{filename} not found in loaded diagrams')
                 continue
             case '5':
-                response_2 = input('Would you like to search by type (1) or by dimension (2)? ')
+                response_2 = input('Would you like to search by type (1) or by dimension (2)? ').strip()
                 match response_2:
                     case '1':
-                        search_type = input('Enter the object type: ')
+                        search_type = input('Enter the object type: ').strip()
                         found = {}
 
                         for name, diagram in diagrams.items():
@@ -162,14 +186,14 @@ def main():
                         continue
                     case '2':
                         print('\nSearch parameters \n---------------')
-                        min_width = input('Min width (enter blank for 0): ')
-                        max_width = input('Max width (enter blank for max): ')
-                        min_height = input('Min height (enter blank for zero): ')
-                        max_height = input('Max height (enter blank for max): ')
+                        min_width = input('Min width (enter blank for 0): ').strip()
+                        max_width = input('Max width (enter blank for max): ').strip()
+                        min_height = input('Min height (enter blank for zero): ').strip()
+                        max_height = input('Max height (enter blank for max): ').strip()
 
                         valid = False
                         while not valid:
-                            truncated = input('Containing Truncated Object (yes/no/All): ')
+                            truncated = input('Containing Truncated Object (yes/no/All): ').strip()
                             if truncated.lower() in ['y', 'yes', 'n', 'no', 'a', 'all']:
                                 valid = True
                                 continue
@@ -177,7 +201,7 @@ def main():
 
                         valid = False
                         while not valid:
-                            difficult = input('Containing Difficult Object (yes/no/All): ')
+                            difficult = input('Containing Difficult Object (yes/no/All): ').strip()
                             if difficult.lower() in ['y', 'yes', 'n', 'no', 'a', 'all']:
                                 valid = True
                                 continue
@@ -201,24 +225,20 @@ def main():
                             difficult = 0
 
                         for name, diagram in diagrams.items():
-                            if not (max_width >= diagram.width >= min_width):
+                            if not (min_width <= diagram.width <= max_width):
                                 continue
-                            if not (max_height >= diagram.height >= min_height):
+                            if not (min_height <= diagram.height <= max_height):
                                 continue
 
-                            if truncated in [1, 0]:
-                                for thing in diagram.objects:
-                                    if truncated == int(thing.truncated):
-                                        if difficult in [1, 0]:
-                                            if difficult == int(thing.difficult):
-                                                matched = True
-                                        else:
-                                            matched = True
+                            matched = False  # reset per diagram
 
-                            if difficult in [1, 0]:
-                                for thing in diagram.objects:
-                                    if difficult == thing.difficult:
-                                        matched = True
+                            for obj in diagram.objects:
+                                trunc_match = (truncated not in [0, 1]) or (int(obj.truncated) == truncated)
+                                diff_match = (difficult not in [0, 1]) or (int(obj.difficult) == difficult)
+
+                                if trunc_match and diff_match:
+                                    matched = True
+                                    break
 
                             if matched:
                                 found[name] = diagram
@@ -235,7 +255,7 @@ def main():
             case '6':
                 valid = False
                 while not valid:
-                    stat = input('\nAvailable statistics: \n\t1) Number of loaded diagrams\n\t2) Total number of total objects\n\t3) Diagram Object Types (list names)\n\t4) Minimum and Maximum dimensions\n\t5) Minimum and Maximum object areas\nYour Selection: ')
+                    stat = input('\nAvailable statistics: \n\t1) Number of loaded diagrams\n\t2) Total number of total objects\n\t3) Diagram Object Types (list names)\n\t4) Minimum and Maximum dimensions\n\t5) Minimum and Maximum object areas\nYour Selection: ').strip()
                     if 1 <= int(stat) <= 5:
                         valid = True
                     else:
@@ -318,7 +338,7 @@ def main():
             case '7':
                 valid = False
                 while not valid:
-                    confirmation = input('Are you sure you want to quit the program (Yes/No)? ')
+                    confirmation = input('Are you sure you want to quit the program (Yes/No)? ').strip()
                     if confirmation.lower() in ['y', 'yes', 'n', 'no']:
                         valid = True
                         continue
