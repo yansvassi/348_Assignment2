@@ -2,16 +2,8 @@ import sys
 import os
 import xml.etree.ElementTree as ET  # For parsing XML files
 
-'''
-	•	CLI menu implementation.
-	•	User input handling.
-	•	Calls to relevant classes/functions.
-	
-Make sure errors (ex: FNF) are handled gracefully, invalid entries
-'''
-
 # Represents a diagram composed of height, width, depth, and objects extracted from an XML annotation.
-class Diagram : # How do I get the whole layered aspect of it??
+class Diagram : #
     # Initializes a diagram with a given name and default dimensions and an empty object list.
     def __init__(self, name):
         self.name = name
@@ -20,7 +12,7 @@ class Diagram : # How do I get the whole layered aspect of it??
         # Depth of the image (e.g., color channels); default is 0.
         self.depth = 0
         # List to store DiagramObject instances representing objects within the diagram.
-        self.objects = [] # for storing
+        self.objects = []
 
     @property
     def area(self):
@@ -42,14 +34,14 @@ class Diagram : # How do I get the whole layered aspect of it??
     def height(self, value):
         self._height = value
 
-    def __str__(self): # todo: property: size, height, width
+    def __str__(self):
         return f'\n{self.name}\ndepth: {self.depth}\nheight: {self.height}\nwidth: {self.width}\narea: {self.area} \nobjects: \n' + '\n'.join(str(obj) for obj in self.objects)
 
 # Represents a single object detected within a diagram, including its type, attributes, and bounding box.
-class DiagramObject : # todo this needs to change, object type is the first, rest is attributes silly goose
+class DiagramObject :
 
     # Initializes a DiagramObject with default values for type, truncated, difficult, and bounding box boundaries.
-    def __init__(self): # todo: ymin, ymax etc etc
+    def __init__(self):
         self.objecttype = None
         self._truncated = None
         self._difficult = None
@@ -77,7 +69,7 @@ class DiagramObject : # todo this needs to change, object type is the first, res
 
     # Provides a formatted string representation of the object, including its type, truncated/difficult flags, and boundaries.
     def __str__(self) :
-        return f'\n\t{self.objecttype} \n\t truncated: {self.truncated} \n\t difficult: {self.difficult} \n\t boundaries: \n\t\txmin: {self.boundary["xmin"]}\n\t\tymin: {self.boundary["ymin"]}\n\t\txmax: {self.boundary["xmax"]}\n\t\tymax: {self.boundary["ymax"]}' #todo: iterate through attribs?
+        return f'\n\t{self.objecttype} \n\t truncated: {self.truncated} \n\t difficult: {self.difficult} \n\t boundaries: \n\t\txmin: {self.boundary["xmin"]}\n\t\tymin: {self.boundary["ymin"]}\n\t\txmax: {self.boundary["xmax"]}\n\t\tymax: {self.boundary["ymax"]}'
 
 diagrams = {} #keys will be file names, values diagrams
 invalid_inputs = 0
@@ -88,7 +80,7 @@ def parsexml(xmlfile, diagram) :
     tree = ET.parse(xmlfile)
     root = tree.getroot()
     if root.find('.//size') is not None:
-        size_tag = root.find('.//size') # todo: assuming perfect input???
+        size_tag = root.find('.//size')
         diagram._width = int(size_tag.find('width').text)
         diagram._height = int(size_tag.find('height').text)
         diagram.depth = int(size_tag.find('depth').text)
@@ -129,7 +121,7 @@ def main():
         6. Statistics
         7. Exit''')
 
-        response = input('\nYour selection: ')
+        response = input('\nYour selection: ').strip()
 
         match response:
 
@@ -147,34 +139,35 @@ def main():
             case '2':
                 # List all diagrams currently loaded into memory.
                 if len(diagrams) == 0:
-                    print('0 diagrams loaded.')
+                    print('\n0 diagrams loaded.\n')
                 else:
-                    print(len(diagrams), 'diagram(s) loaded: ')
-                    print(', '.join(diagrams.keys())) # remove line breaks todo: '' around each elem
+                    print(f'{len(diagrams)} diagram(s) loaded: ')
+                    print(', '.join(diagrams.keys()))
+                    print()
                 continue
 
             case '3':
                 # Load an XML file and parse its contents into a Diagram object.
-                filename = input('Enter the filename to load: ').strip()
+                filename = input('Enter the filename to load (include ".xml")').strip()
                 #check if file available, if not return
                 path_to_file = directory + '/' + filename
                 if not os.path.isfile(path_to_file): #at this point are we in directory or do I have to put the whole path here?
-                    print('nuh uh! ')
+                    print('\nEntered document does not exist\n')
                 elif not filename.endswith('.xml'):
-                    print('Invalid doctype, only xml file parsing is available')
+                    print('\nInvalid doctype, only xml file parsing is available\n')
                 else:
                     diagram = Diagram(filename[:-4])
                     try:
                         parsexml(path_to_file, diagram) # this will be our value
                         diagrams[filename[:-4]] = diagram
-                        print(filename + ' successfully loaded')
+                        print(f'\n{filename} successfully loaded\n')
                     except Exception as e:
                         print(e)
                 continue
 
             case '4':
                 # Display the details of a specific loaded diagram.
-                filename = input('Enter the filename to display: ').strip() #only those that are already loaded right?, specify what format to type name of diagram (w xml?)
+                filename = input('Enter the filename to display: (include ".xml")').strip() #only those that are already loaded right?, specify what format to type name of diagram (w xml?)
                 if filename[:-4] in diagrams:
                     print(diagrams[filename[:-4]])
                 else:
@@ -267,7 +260,7 @@ def main():
                             print()
                         else:
                             print('No matching diagrams found')
-                        continue # todo: consistency in search format (.xml or no .xml)
+                        continue
 
             case '6':
                 # Display various statistics about the loaded diagrams and objects.
@@ -371,7 +364,6 @@ def main():
                     case _:
                         continue
 
-            # else say selection not valid, invalid inputs ++
         if invalid_inputs >= 0:
             print(f'Invalid entry, try again (Warning {invalid_inputs + 1}/5)')
             invalid_inputs += 1
